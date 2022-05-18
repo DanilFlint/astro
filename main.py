@@ -1,6 +1,7 @@
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
+import re
 import matplotlib.pyplot as plt
 
 def get_V(a,b): #a - вектор Солнца, b - вектор астероида
@@ -16,6 +17,22 @@ def get_V(a,b): #a - вектор Солнца, b - вектор астерои�
 def Gaus(asteroid_matrix, Sun_matrix):
     pass
 
+def read(path):
+    f = open(path) # Заменить на нужное имя файла. Файл подаётся без шапки и конца.
+    # Только со значениями. Пример в репозитории
+    l = [line.strip() for line in f]
+    array = [] # Список списков.
+    # Каждый элемент array - список значений [X,Y,Z]
+    for i in range(1, len(l), 4):
+        s = [float(s) for s in re.findall(r'-?\d+\.?\d*', l[i])]
+        s[0] = s[0]*(10**(s[1]))
+        del s[1]
+        s[1] = s[1] * (10 ** s[2])
+        del s[2]
+        s[2] = s[2] * (10 ** s[3])
+        del s[3]
+        array.append(s)
+    return array
 
 if __name__ == '__main__':
 
@@ -31,15 +48,26 @@ if __name__ == '__main__':
 
     print(x0 + y0)
 
-    """mpl.rcParams['legend.fontsize'] = 10
+    vector_X = []
+    vector_Y = []
+    vector_Z = []
+    coords = read('./Считывание/demo.txt')
+    print(coords)
+
+    for coord in coords:
+        vector_X.append(coord[0])
+        vector_Y.append(coord[1])
+        vector_Z.append(coord[2])
+    print(vector_X)
+    print(vector_Y)
+    print(vector_Z)
+
+    mpl.rcParams['legend.fontsize'] = 10
 
     fig = plt.figure()
     ax = fig.gca(projection='3d')
-    #theta = np.linspace(-50000 * np.pi, 50000 * np.pi, 9)
-    z = [1,2,3,4,5,6,7,8,9,10,11,12]
-    x = [1,2,3,4,5,6,7,8,9,10,11,12]
-    y = [1,2,3,4,5,6,7,8,9,10,11,12]
-    ax.plot(x, y, z, label='parametric curve')
-    ax.legend()"""
-
+    theta = np.linspace(-50000 * np.pi, 50000 * np.pi, 10000000)
+    ax.plot(vector_X, vector_Y, vector_Z, label='Орбита астероида 9162 Kwiila (1987 OA)')
+    ax.legend()
+    
     plt.show()
